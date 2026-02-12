@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Error {
+struct JessError: Error {
     let line: Int
     let message: String
 }

@@ -43,8 +43,16 @@ final class Token {
         self.line = line
     }
     
+    convenience init() {
+        self.init(type: .EOF, lexeme: "default", literal: .none, line: -1)
+    }
+    
     func toString() -> String {
         return "type: \(type), lexeme: \(lexeme)"
+    }
+    
+    func defaultToken() -> Token {
+        return Token(type: .EOF, lexeme: "default", literal: .none, line: -1)
     }
 }
 

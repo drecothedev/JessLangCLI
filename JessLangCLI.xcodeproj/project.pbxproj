@@ -20,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		DAB5D5582F3192F5002CDD82 /* JessLangCLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = JessLangCLI; sourceTree = BUILT_PRODUCTS_DIR; };
+		DAB5D57E2F31A19F002CDD82 /* JessLang.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JessLang.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -28,10 +29,22 @@
 			path = JessLangCLI;
 			sourceTree = "<group>";
 		};
+		DAB5D57F2F31A19F002CDD82 /* JessLang */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = JessLang;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		DAB5D5552F3192F5002CDD82 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DAB5D57B2F31A19F002CDD82 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -45,6 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				DAB5D55A2F3192F5002CDD82 /* JessLangCLI */,
+				DAB5D57F2F31A19F002CDD82 /* JessLang */,
 				DAB5D5592F3192F5002CDD82 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -53,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				DAB5D5582F3192F5002CDD82 /* JessLangCLI */,
+				DAB5D57E2F31A19F002CDD82 /* JessLang.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -82,6 +97,28 @@
 			productReference = DAB5D5582F3192F5002CDD82 /* JessLangCLI */;
 			productType = "com.apple.product-type.tool";
 		};
+		DAB5D57D2F31A19F002CDD82 /* JessLang */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DAB5D5822F31A19F002CDD82 /* Build configuration list for PBXNativeTarget "JessLang" */;
+			buildPhases = (
+				DAB5D57A2F31A19F002CDD82 /* Sources */,
+				DAB5D57B2F31A19F002CDD82 /* Frameworks */,
+				DAB5D57C2F31A19F002CDD82 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				DAB5D57F2F31A19F002CDD82 /* JessLang */,
+			);
+			name = JessLang;
+			packageProductDependencies = (
+			);
+			productName = JessLang;
+			productReference = DAB5D57E2F31A19F002CDD82 /* JessLang.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -93,6 +130,9 @@
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					DAB5D5572F3192F5002CDD82 = {
+						CreatedOnToolsVersion = 26.1;
+					};
+					DAB5D57D2F31A19F002CDD82 = {
 						CreatedOnToolsVersion = 26.1;
 					};
 				};
@@ -112,12 +152,30 @@
 			projectRoot = "";
 			targets = (
 				DAB5D5572F3192F5002CDD82 /* JessLangCLI */,
+				DAB5D57D2F31A19F002CDD82 /* JessLang */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		DAB5D57C2F31A19F002CDD82 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		DAB5D5542F3192F5002CDD82 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DAB5D57A2F31A19F002CDD82 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -267,6 +325,40 @@
 			};
 			name = Release;
 		};
+		DAB5D5832F31A19F002CDD82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = drecon.JessLang;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		DAB5D5842F31A19F002CDD82 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = drecon.JessLang;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -284,6 +376,15 @@
 			buildConfigurations = (
 				DAB5D5602F3192F5002CDD82 /* Debug */,
 				DAB5D5612F3192F5002CDD82 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DAB5D5822F31A19F002CDD82 /* Build configuration list for PBXNativeTarget "JessLang" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DAB5D5832F31A19F002CDD82 /* Debug */,
+				DAB5D5842F31A19F002CDD82 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -8,9 +8,20 @@
 import Foundation
 
 indirect enum Expr {
+    // Operations that will effect the expressions to the right and left.
+    // ex: 5 + 5
     case binary(left: Expr, op: Token, right: Expr)
+    
+    // Experessions that are wrapped in parenthesis, brackets, etc.
+    // ex: (5 * 5)
     case grouping(Expr)
-    case literal(Any)
+    
+    // Any value that is not tied to a variable
+    // ex: 42, "Hello world"
+    case literal(Any?)
+    
+    // A value that is being effected by the token next to it
+    // ex: -42, ++i, etc. 
     case unary(op: Token, right: Expr)
 }
 
