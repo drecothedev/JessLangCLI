@@ -134,7 +134,9 @@ class Scanner {
         let currentIdx = source.index(source.startIndex, offsetBy: current)
         let text = String(source[startIdx..<currentIdx])
         tokens.append(Token(type: type, lexeme: text, literal: literal, line: line))
+        print("token added: \(type) literal: \(literal) lexeme: \(text)") // ✅
     }
+
 
     
     // For lexemes that may rely on the presence of another character we check for the presence of that character. For example, if the current char is '!' we want to see if the character next to it is '=' so we can handle accordingly

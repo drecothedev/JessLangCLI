@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+enum Stmt {
+    case expression(Expr)
+    case print(Expr)
+}

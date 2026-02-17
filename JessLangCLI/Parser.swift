@@ -21,8 +21,7 @@ final class Parser {
 
     // MARK: - Public API (book style)
 
-    /// Returns an expression or nil if a syntax error occurred.
-    func parse() -> Expr? {
+    func parseExpressions() -> Expr? {
         do {
             return try expression()
         } catch is ParseError {
@@ -34,6 +33,40 @@ final class Parser {
             return nil
         }
     }
+
+    /// Returns an expression or nil if a syntax error occurred.
+    func parseStatements() -> [Stmt] {
+        var statements: [Stmt] = []
+
+        while !isAtEnd {
+            if let stmt = declaration() {     // or statement() if you haven’t added declarations yet
+                statements.append(stmt)
+            }
+        }
+
+        return statements
+    }
+    
+    private func declaration() -> Stmt? {
+        do {
+            // later you’ll branch: if match(.var) { return try varDeclaration() } etc.
+            return try statement()
+        } catch is ParseError {
+            synchronize()
+            return nil
+        } catch {
+            print(error)
+            synchronize()
+            return nil
+        }
+    }
+    
+    private func statement() throws -> Stmt {
+        let expr = try expression()
+        try consume(.semicolon, message: "Expect ';' after expression.")
+        return .expression(expr)
+    }
+
 
     // MARK: - Grammar
 

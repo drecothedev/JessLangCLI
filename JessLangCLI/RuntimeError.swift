@@ -6,3 +6,13 @@
 //
 
 import Foundation
+
+class RuntimeError: Error {
+    final let token: Token
+    final let message: String
+    
+    init(token: Token, message: String) {
+        self.token = token
+        self.message = message
+    }
+}

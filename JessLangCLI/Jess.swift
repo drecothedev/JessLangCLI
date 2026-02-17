@@ -11,12 +11,77 @@ import Foundation
  This file will act as the main manager of the language. Meaning it will use all of the helper functions
  */
 
-class Jess {
-    var hasError: Bool = false
+import Foundation
 
-    // Will report any error that the program has encountered
-    func report(line: Int, message: String, location: String) {
-        print("Error found at \(line). message: \(line).")
-        hasError = true
+class Jess {
+
+    // MARK: - Error Flags
+    static var hadError = false
+    static var hadRuntimeError = false
+
+    // MARK: - Entry Points
+
+    static func runFile(path: String) {
+        do {
+            let source = try String(contentsOfFile: path, encoding: .utf8)
+            run(source)
+
+            if hadError { exit(65) }
+            if hadRuntimeError { exit(70) }
+
+        } catch {
+            print("Could not read file at path: \(path)")
+            exit(74)
+        }
+    }
+
+    static func runPrompt() {
+        while true {
+            print("> ", terminator: "")
+            guard let line = readLine() else { break }
+
+            run(line)
+            hadError = false   // reset for REPL
+        }
+    }
+
+    static func run(_ source: String) {
+        let scanner = Scanner(source: source)
+        let tokens = scanner.scanTokens()
+
+        let parser = Parser(tokens: tokens)
+        guard let expression = parser.parseExpressions() else { return }
+
+        if hadError { return }
+
+        let interpreter = Interpreter()
+
+        do {
+            try interpreter.interpret(expression: expression)
+        } catch let error as RuntimeError {
+            runtimeError(error)
+        } catch {
+            print("Unexpected error: \(error)")
+        }
+    }
+
+    // MARK: - Compile Errors
+
+    static func error(line: Int, message: String) {
+        report(line: line, where: "", message: message)
+    }
+
+    static func report(line: Int, where location: String, message: String) {
+        print("[line \(line)] Error\(location): \(message)")
+        hadError = true
+    }
+
+    // MARK: - Runtime Errors
+
+    static func runtimeError(_ error: RuntimeError) {
+        print("\(error.message)\n[line \(error.token.line)]")
+        hadRuntimeError = true
     }
 }
+
+

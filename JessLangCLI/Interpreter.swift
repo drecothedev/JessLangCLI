@@ -10,13 +10,13 @@ import Foundation
 final class Interpreter: ExprVisitor {
     typealias ReturnType = Any?
 
-    func evaluate(_ expr: Expr) -> Any? {
-        expr.accept(self)
+    func evaluate(_ expr: Expr) throws -> Any? {
+        try expr.accept(self)
     }
 
-    func visitBinary(_ expr: Expr, left: Expr, op: Token, right: Expr) -> Any? {
-        let l = left.accept(self)
-        let r = right.accept(self)
+    func visitBinary(_ expr: Expr, left: Expr, op: Token, right: Expr) throws -> Any? {
+        let l = try left.accept(self)
+        let r = try right.accept(self)
 
         switch op.type {
         case .plus:
@@ -27,7 +27,7 @@ final class Interpreter: ExprVisitor {
             // string + anything (optional)
             if let a = l as? String { return a + String(describing: r) }
             if let b = r as? String { return String(describing: l) + b }
-            return nil
+            throw RuntimeError(token: op, message: "Operands must be two numbers or strings.")
 
         case .minus:
             if let a = l as? Double, let b = r as? Double { return a - b }
@@ -69,16 +69,25 @@ final class Interpreter: ExprVisitor {
         }
     }
 
-    func visitGrouping(_ expr: Expr, expression: Expr) -> Any? {
-        expression.accept(self)
+    func visitGrouping(_ expr: Expr, expression: Expr) throws -> Any? {
+        try expression.accept(self)
     }
 
     func visitLiteral(_ expr: Expr, value: Any?) -> Any? {
-        value
+        if let lit = value as? LiteralValue {
+            switch lit {
+            case .number(let d): return d
+            case .string(let s): return s
+            case .boolean(let b): return b
+            case .none: return nil
+            }
+        }
+        return value
     }
 
-    func visitUnary(_ expr: Expr, op: Token, right: Expr) -> Any? {
-        let r = right.accept(self)
+
+    func visitUnary(_ expr: Expr, op: Token, right: Expr) throws -> Any? {
+        let r = try right.accept(self)
 
         switch op.type {
         case .minus:
@@ -91,6 +100,36 @@ final class Interpreter: ExprVisitor {
         default:
             return nil
         }
+    }
+    
+    func interpret(expression: Expr) {
+        do {
+            let val = try evaluate(expression)
+            print(stringify(obj: val))
+        } catch let error as RuntimeError {
+            Jess.runtimeError(error)
+        } catch {
+            print("Unexpected error: \(error)")
+        }
+    }
+
+    
+    func stringify(obj: Any?) -> String {
+        guard let obj = obj else { return "nil" }
+        
+        if let objAsDouble = obj as? Double {
+            var text = String(objAsDouble)
+            let startIdx = text.startIndex
+            let secondToLastIdx = text.index(text.endIndex, offsetBy: -2)
+            let lastIdx = text.index(text.endIndex, offsetBy: -1)
+            if text[secondToLastIdx] == "." && text[lastIdx] == "0" {
+                text = String(text[startIdx...secondToLastIdx])
+            }
+            
+            return text
+        }
+        
+        return obj as? String ?? ""
     }
 
     // MARK: - Helpers
@@ -109,6 +148,14 @@ final class Interpreter: ExprVisitor {
         case let (x as String, y as String): return x == y
         default: return false
         }
+    }
+    
+    private func checkNumberOperands(op: Token, l: Any?, r: Any?) throws {
+        guard let left = l as? Double else { return }
+        guard let right = r as? Double else { return }
+        
+        let runtimerError = RuntimeError(token: op, message: "Please use only numbers for arithmetic")
+        throw runtimerError
     }
 }
 

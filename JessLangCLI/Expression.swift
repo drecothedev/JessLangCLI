@@ -28,10 +28,10 @@ indirect enum Expr {
 protocol ExprVisitor {
     associatedtype ReturnType
 
-    func visitBinary(_ expr: Expr, left: Expr, op: Token, right: Expr) -> ReturnType
-    func visitGrouping(_ expr: Expr, expression: Expr) -> ReturnType
-    func visitLiteral(_ expr: Expr, value: Any?) -> ReturnType
-    func visitUnary(_ expr: Expr, op: Token, right: Expr) -> ReturnType
+    func visitBinary(_ expr: Expr, left: Expr, op: Token, right: Expr) throws -> ReturnType
+    func visitGrouping(_ expr: Expr, expression: Expr) throws -> ReturnType
+    func visitLiteral(_ expr: Expr, value: Any?) throws -> ReturnType
+    func visitUnary(_ expr: Expr, op: Token, right: Expr) throws -> ReturnType
 }
 
 
@@ -78,16 +78,16 @@ class Expression {
 
 
 extension Expr {
-    func accept<V: ExprVisitor>(_ visitor: V) -> V.ReturnType {
+    func accept<V: ExprVisitor>(_ visitor: V) throws -> V.ReturnType {
         switch self {
         case let .binary(left, op, right):
-            return visitor.visitBinary(self, left: left, op: op, right: right)
+            return try visitor.visitBinary(self, left: left, op: op, right: right)
         case let .grouping(expression):
-            return visitor.visitGrouping(self, expression: expression)
+            return try visitor.visitGrouping(self, expression: expression)
         case let .literal(value):
-            return visitor.visitLiteral(self, value: value)
+            return try visitor.visitLiteral(self, value: value)
         case let .unary(op, right):
-            return visitor.visitUnary(self, op: op, right: right)
+            return try visitor.visitUnary(self, op: op, right: right)
         }
     }
 }
