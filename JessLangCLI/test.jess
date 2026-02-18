@@ -3,3 +3,5 @@ a = 2;
 a = 45;
 print a;
 
+// outputs 45. Meaning the Jess supports variable assignment. 
+
