@@ -1,7 +1,26 @@
-var a = 1;
-a = 2;
-a = 45;
-print a;
+func main() {
+    var p = "p";
+    while(!checkUserChoice(p)) {
+        print checkUserChoice(p);
+    }
+}
 
+<<<<<<< HEAD
 // outputs 45. Meaning the Jess supports variable assignment. 
 
+=======
+func checkUserChoice(a) {
+    var compChoice = "p";
+    if (a == compChoice) {
+        return true;
+    }
+    return false;
+}
+
+main();
+
+let flavor = "Chocolate";
+flavor = "vanilla"; 
+print checkUserChoice(flavor);
+print flavor;
+>>>>>>> 8d4ff51 (added support for variable declaration, functions, loops, and logical operators)

@@ -8,13 +8,25 @@
 import Foundation
 
 struct AstPrinter: ExprVisitor {
-    func visitAssign(_ expr: Expr, name: Token, value: Expr) throws -> String {
-        name.lexeme
-    }
     typealias ReturnType = String
+
+    func visitLogical(_ expr: Expr, left: Expr, op: Token, right: Expr) throws -> String {
+        "(\(op.lexeme) \(try left.accept(self)) \(try right.accept(self)))"
+    }
+    
+    func visitCall(_ expr: Expr, callee: Expr, paren: Token, args: [Expr]) throws -> String {
+        let argText = try args.map { try $0.accept(self) }.joined(separator: " ")
+        let calleeText = try callee.accept(self)
+        return argText.isEmpty ? "(call \(calleeText))" : "(call \(calleeText) \(argText))"
+    }
+
     
     func print(_ expr: Expr) throws -> String {
             try expr.accept(self)
+    }
+    
+    func visitAssign(_ expr: Expr, name: Token, value: Expr) throws -> String {
+        name.lexeme
     }
     
     func visitVariable(_ expr: Expr, name: Token) throws -> String {

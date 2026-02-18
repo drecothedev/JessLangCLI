@@ -29,6 +29,10 @@ indirect enum Expr {
     
     case assign(name: Token, value: Expr)
     
+    case logical(l: Expr, op: Token, r: Expr)
+    
+    case call(callee: Expr, paren: Token, args: [Expr])
+    
 }
 
 protocol ExprVisitor {
@@ -40,7 +44,10 @@ protocol ExprVisitor {
     func visitUnary(_ expr: Expr, op: Token, right: Expr) throws -> ReturnType
     func visitVariable(_ expr: Expr, name: Token) throws -> ReturnType
     func visitAssign(_ expr: Expr, name: Token, value: Expr) throws -> ReturnType
+    func visitLogical(_ expr: Expr, left: Expr, op: Token, right: Expr) throws -> ReturnType
+    func visitCall(_ expr: Expr, callee: Expr, paren: Token, args: [Expr]) throws -> ReturnType
 }
+
 
 
 
@@ -68,6 +75,10 @@ class Expression {
             print("")
         case .assign(name: let name, value: let value):
             print("")
+        case .logical(l: let l, op: let op, r: let r):
+            print("")
+        case .call(callee: let callee, paren: let paren, args: let args):
+            print("")
         }
     }
     
@@ -88,6 +99,10 @@ class Expression {
             return ""
         case .assign(name: let name, value: let value):
             return ""
+        case .logical(l: let l, op: let op, r: let r):
+            return ""
+        case .call(callee: let callee, paren: let paren, args: let args):
+            return "" 
         }
     }
 }
@@ -108,6 +123,11 @@ extension Expr {
             return try visitor.visitVariable(self, name: name)
         case .assign(name: let name, value: let value):
             return try visitor.visitAssign(self, name: name, value: value)
+        case let .logical(left, op, right):
+            return try visitor.visitLogical(self, left: left, op: op, right: right)
+        case let .call(callee, paren, args):
+            return try visitor.visitCall(self, callee: callee, paren: paren, args: args)
+
         }
     }
 }

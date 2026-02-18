@@ -10,7 +10,7 @@ import Foundation
 final class Interpreter: ExprVisitor {
     typealias ReturnType = Any?
 
-    private let environment = Enviroment()
+    private var environment = Enviroment()
 
     // MARK: - Top-level
 
@@ -38,8 +38,46 @@ final class Interpreter: ExprVisitor {
         case .variable(let name, let initializer):
             let value: Any? = try initializer.flatMap { try evaluate($0) }
             try environment.define(name: name, value: value)
+        case .block(let statements):
+            try executeBlock(statements, in: Enviroment(enclosing: environment))
+        case .if(let condition, let thenBranch, let elseBranch):
+            if isTruthy(try evaluate(condition)) {
+                try execute(thenBranch)
+            } else if let elseBranch {
+                try execute(elseBranch)
+            }
+        case .while(let condition, let body):
+            while isTruthy(try evaluate(condition)) {
+                try execute(body)
+            }
+        case .function(let name, let params, let body):
+            let fn = JessFunction(name: name, params: params, body: body, closure: environment)
+            try environment.define(name: name, value: fn)
+
+        case .return(_, let value):
+            let returnValue = try value.flatMap { try evaluate($0) }
+            throw ReturnSignal(returnValue)
         }
     }
+    
+    func visitCall(_ expr: Expr, callee: Expr, paren: Token, args: [Expr]) throws -> Any? {
+        let calleeValue = try evaluate(callee)
+        let arguments = try args.map { try evaluate($0) }
+
+        guard let function = calleeValue as? JessCallable else {
+            throw RuntimeError(token: paren, message: "Can only call functions and classes.")
+        }
+
+        if arguments.count != function.arity {
+            throw RuntimeError(
+                token: paren,
+                message: "Expected \(function.arity) arguments but got \(arguments.count)."
+            )
+        }
+
+        return try function.call(interpreter: self, args: arguments)
+    }
+
 
     // MARK: - Expr evaluation
 
@@ -141,7 +179,20 @@ final class Interpreter: ExprVisitor {
             return nil
         }
     }
+    
+    func visitLogical(_ expr: Expr, left: Expr, op: Token, right: Expr) throws -> Any? {
+        let leftValue = try evaluate(left)
 
+        if op.type == .or {
+            if isTruthy(leftValue) { return leftValue }
+        } else {
+            if !isTruthy(leftValue) { return leftValue }
+        }
+
+        return try evaluate(right)
+    }
+
+    
     // MARK: - Printing
 
     func stringify(obj: Any?) -> String {
@@ -157,7 +208,17 @@ final class Interpreter: ExprVisitor {
     }
 
     // MARK: - Helpers
-
+    
+    func executeBlock(_ statements: [Stmt], in enviroment: Enviroment) throws {
+        let previous = self.environment
+        self.environment = enviroment
+        defer { self.environment = previous }
+        
+        for statement in statements {
+            try execute(statement)
+        }
+    }
+    
     private func isTruthy(_ value: Any?) -> Bool {
         if value == nil { return false }
         if let b = value as? Bool { return b }

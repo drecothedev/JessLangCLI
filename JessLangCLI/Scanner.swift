@@ -68,9 +68,9 @@ class Scanner {
         case "!":
             addToken(type: match(expectedValue: "=") ? .bangEqual : .bang)
         case ">":
-            addToken(type: match(expectedValue: "=") ? .greaterEqual : .bang)
+            addToken(type: match(expectedValue: "=") ? .greaterEqual : .greater)
         case "<":
-            addToken(type: match(expectedValue: "=") ? .lessEqual : .lessEqual)
+            addToken(type: match(expectedValue: "=") ? .lessEqual : .less)
         case "=":
             addToken(type: match(expectedValue: "=") ? .equalEqual : .equal)
         case "/":
@@ -137,7 +137,8 @@ class Scanner {
     
     // For lexemes that may rely on the presence of another character we check for the presence of that character. For example, if the current char is '!' we want to see if the character next to it is '=' so we can handle accordingly
     func match(expectedValue: Character) -> Bool {
-        guard current <= source.count else { return false }
+        guard current < source.count else { return false }
+
         if source[source.index(source.startIndex, offsetBy: current)] != expectedValue {
             return false
         }
@@ -251,6 +252,7 @@ class Scanner {
         "this": .this,
         "true": .true,
         "var": .var,
+        "let": .let,
         "while": .while
     ]
 
