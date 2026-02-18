@@ -23,9 +23,22 @@
 		DAB5D57E2F31A19F002CDD82 /* JessLang.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JessLang.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		DABF50F82F45418C001F664A /* Exceptions for "JessLangCLI" folder in "JessLang" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Enviroment.swift,
+			);
+			target = DAB5D57D2F31A19F002CDD82 /* JessLang */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		DAB5D55A2F3192F5002CDD82 /* JessLangCLI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				DABF50F82F45418C001F664A /* Exceptions for "JessLangCLI" folder in "JessLang" target */,
+			);
 			path = JessLangCLI;
 			sourceTree = "<group>";
 		};

@@ -10,4 +10,5 @@ import Foundation
 enum Stmt {
     case expression(Expr)
     case print(Expr)
+    case variable(name: Token, initializer: Expr?)
 }

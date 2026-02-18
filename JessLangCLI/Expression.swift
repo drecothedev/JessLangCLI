@@ -23,6 +23,12 @@ indirect enum Expr {
     // A value that is being effected by the token next to it
     // ex: -42, ++i, etc. 
     case unary(op: Token, right: Expr)
+    
+    // Evaluates a variable representing an expression
+    case variable(Token)
+    
+    case assign(name: Token, value: Expr)
+    
 }
 
 protocol ExprVisitor {
@@ -32,6 +38,8 @@ protocol ExprVisitor {
     func visitGrouping(_ expr: Expr, expression: Expr) throws -> ReturnType
     func visitLiteral(_ expr: Expr, value: Any?) throws -> ReturnType
     func visitUnary(_ expr: Expr, op: Token, right: Expr) throws -> ReturnType
+    func visitVariable(_ expr: Expr, name: Token) throws -> ReturnType
+    func visitAssign(_ expr: Expr, name: Token, value: Expr) throws -> ReturnType
 }
 
 
@@ -56,6 +64,10 @@ class Expression {
             print("D")
         case .unary(_, _):
             print("S")
+        case .variable(_):
+            print("")
+        case .assign(name: let name, value: let value):
+            print("")
         }
     }
     
@@ -72,6 +84,10 @@ class Expression {
 
         case let .unary(op, right):
             return "(\(op.lexeme) \(printExpr(right)))"
+        case .variable(_):
+            return ""
+        case .assign(name: let name, value: let value):
+            return ""
         }
     }
 }
@@ -88,6 +104,10 @@ extension Expr {
             return try visitor.visitLiteral(self, value: value)
         case let .unary(op, right):
             return try visitor.visitUnary(self, op: op, right: right)
+        case .variable(let name):
+            return try visitor.visitVariable(self, name: name)
+        case .assign(name: let name, value: let value):
+            return try visitor.visitAssign(self, name: name, value: value)
         }
     }
 }

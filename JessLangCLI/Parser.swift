@@ -33,7 +33,7 @@ final class Parser {
             return nil
         }
     }
-
+    
     /// Returns an expression or nil if a syntax error occurred.
     func parseStatements() -> [Stmt] {
         var statements: [Stmt] = []
@@ -49,7 +49,9 @@ final class Parser {
     
     private func declaration() -> Stmt? {
         do {
-            // later you’ll branch: if match(.var) { return try varDeclaration() } etc.
+            if match(.var) {
+                return try varDeclaration()
+            }
             return try statement()
         } catch is ParseError {
             synchronize()
@@ -61,17 +63,64 @@ final class Parser {
         }
     }
     
-    private func statement() throws -> Stmt {
-        let expr = try expression()
-        try consume(.semicolon, message: "Expect ';' after expression.")
-        return .expression(expr)
+    private func varDeclaration() throws -> Stmt {
+        let name = try consume(.identifier, message: "Expect variable name.")
+
+        var initializer: Expr? = nil
+
+        if match(.equal) {
+            initializer = try expression()
+        }
+
+        try consume(.semicolon, message: "Expect ';' after variable declaration.")
+
+        return .variable(name: name, initializer: initializer)
     }
 
+    
+    private func statement() throws -> Stmt {
+        if match(.print) {
+            return try printStatement()
+        }
+        
+        return try expressionStatement()
+    }
+    
+    private func printStatement() throws -> Stmt {
+        let expr = try expression()
+        let _ = try consume(.semicolon, message: "Expect ';' after expression.")
+        return .print(expr)
+    }
 
+    private func expressionStatement() throws -> Stmt {
+        let expr = try expression()
+        let _ = try consume(.semicolon, message: "Expect ';' after expression")
+        
+        return Stmt.expression(expr)
+    }
+    
+    private func assignment() throws -> Expr {
+        var expr = try equality()
+
+        if match(.equal) {
+            let equals = previous()
+            let value = try assignment()
+
+            if case .variable(let name) = expr {
+                return .assign(name: name, value: value)
+            }
+
+            throw error(equals, "Invalid assignment target.")
+        }
+
+        return expr
+    }
+    
+    
     // MARK: - Grammar
 
     private func expression() throws -> Expr {
-        try equality()
+        try assignment()
     }
 
     private func equality() throws -> Expr {
@@ -108,15 +157,19 @@ final class Parser {
             return .literal(previous().literal)
         }
 
+        if match(.identifier) {
+            return .variable(previous())
+        }
+
         if match(.leftParent) {
             let expr = try expression()
             try consume(.rightParent, message: "Expect ')' after expression.")
             return .grouping(expr)
         }
 
-        // Book: error(peek(), "Expect expression.")
         throw error(peek(), "Expect expression.")
     }
+
 
     // MARK: - Binary helper
 
@@ -184,9 +237,14 @@ final class Parser {
 
     /// Report error to user and return a ParseError to throw.
     private func error(_ token: Token, _ message: String) -> ParseError {
-        JessLang.error(token: token, message: message)
+        if token.type == .EOF {
+            Jess.report(line: token.line, where: " at end", message: message)
+        } else {
+            Jess.report(line: token.line, where: " at '\(token.lexeme)'", message: message)
+        }
         return ParseError()
     }
+
 
     // MARK: - Synchronization (panic mode recovery)
 

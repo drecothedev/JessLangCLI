@@ -10,8 +10,52 @@ import Foundation
 final class Interpreter: ExprVisitor {
     typealias ReturnType = Any?
 
+    private let environment = Enviroment()
+
+    // MARK: - Top-level
+
+    func interpret(statements: [Stmt]) {
+        do {
+            for statement in statements {
+                try execute(statement)
+            }
+        } catch let err as RuntimeError {
+            Jess.runtimeError(err)
+        } catch {
+            print("Unexpected error: \(error)")
+        }
+    }
+
+    private func execute(_ stmt: Stmt) throws {
+        switch stmt {
+        case .expression(let expr):
+            _ = try evaluate(expr)
+
+        case .print(let expr):
+            let value = try evaluate(expr)
+            print(stringify(obj: value))
+
+        case .variable(let name, let initializer):
+            let value: Any? = try initializer.flatMap { try evaluate($0) }
+            try environment.define(name: name, value: value)
+        }
+    }
+
+    // MARK: - Expr evaluation
+
     func evaluate(_ expr: Expr) throws -> Any? {
         try expr.accept(self)
+    }
+
+    // Assignment expression: a = <expr>
+    func visitAssign(_ expr: Expr, name: Token, value: Expr) throws -> Any? {
+        let newValue = try evaluate(value)
+        try environment.assign(name: name, value: newValue)
+        return newValue
+    }
+
+    func visitVariable(_ expr: Expr, name: Token) throws -> Any? {
+        try environment.get(name: name)
     }
 
     func visitBinary(_ expr: Expr, left: Expr, op: Token, right: Expr) throws -> Any? {
@@ -20,45 +64,41 @@ final class Interpreter: ExprVisitor {
 
         switch op.type {
         case .plus:
-            // number + number
             if let a = l as? Double, let b = r as? Double { return a + b }
-            // string + string (optional)
             if let a = l as? String, let b = r as? String { return a + b }
-            // string + anything (optional)
             if let a = l as? String { return a + String(describing: r) }
             if let b = r as? String { return String(describing: l) + b }
             throw RuntimeError(token: op, message: "Operands must be two numbers or strings.")
 
         case .minus:
             if let a = l as? Double, let b = r as? Double { return a - b }
-            return nil
+            throw RuntimeError(token: op, message: "Operands must be numbers.")
 
         case .star:
             if let a = l as? Double, let b = r as? Double { return a * b }
-            return nil
+            throw RuntimeError(token: op, message: "Operands must be numbers.")
 
         case .slash:
             if let a = l as? Double, let b = r as? Double { return a / b }
-            return nil
+            throw RuntimeError(token: op, message: "Operands must be numbers.")
 
         case .greater:
             if let a = l as? Double, let b = r as? Double { return a > b }
-            return nil
+            throw RuntimeError(token: op, message: "Operands must be numbers.")
 
         case .greaterEqual:
             if let a = l as? Double, let b = r as? Double { return a >= b }
-            return nil
+            throw RuntimeError(token: op, message: "Operands must be numbers.")
 
         case .less:
             if let a = l as? Double, let b = r as? Double { return a < b }
-            return nil
+            throw RuntimeError(token: op, message: "Operands must be numbers.")
 
         case .lessEqual:
             if let a = l as? Double, let b = r as? Double { return a <= b }
-            return nil
+            throw RuntimeError(token: op, message: "Operands must be numbers.")
 
         case .equalEqual:
-            // Simple equality check
             return isEqual(l, r)
 
         case .bangEqual:
@@ -73,7 +113,8 @@ final class Interpreter: ExprVisitor {
         try expression.accept(self)
     }
 
-    func visitLiteral(_ expr: Expr, value: Any?) -> Any? {
+    func visitLiteral(_ expr: Expr, value: Any?) throws -> Any? {
+        // If literals are stored as LiteralValue, unwrap them.
         if let lit = value as? LiteralValue {
             switch lit {
             case .number(let d): return d
@@ -85,14 +126,13 @@ final class Interpreter: ExprVisitor {
         return value
     }
 
-
     func visitUnary(_ expr: Expr, op: Token, right: Expr) throws -> Any? {
         let r = try right.accept(self)
 
         switch op.type {
         case .minus:
             if let n = r as? Double { return -n }
-            return nil
+            throw RuntimeError(token: op, message: "Operand must be a number.")
 
         case .bang:
             return !isTruthy(r)
@@ -101,35 +141,19 @@ final class Interpreter: ExprVisitor {
             return nil
         }
     }
-    
-    func interpret(expression: Expr) {
-        do {
-            let val = try evaluate(expression)
-            print(stringify(obj: val))
-        } catch let error as RuntimeError {
-            Jess.runtimeError(error)
-        } catch {
-            print("Unexpected error: \(error)")
-        }
-    }
 
-    
+    // MARK: - Printing
+
     func stringify(obj: Any?) -> String {
-        guard let obj = obj else { return "nil" }
-        
-        if let objAsDouble = obj as? Double {
-            var text = String(objAsDouble)
-            let startIdx = text.startIndex
-            let secondToLastIdx = text.index(text.endIndex, offsetBy: -2)
-            let lastIdx = text.index(text.endIndex, offsetBy: -1)
-            if text[secondToLastIdx] == "." && text[lastIdx] == "0" {
-                text = String(text[startIdx...secondToLastIdx])
-            }
-            
+        guard let obj else { return "nil" }
+
+        if let d = obj as? Double {
+            var text = String(d)
+            if text.hasSuffix(".0") { text.removeLast(2) }
             return text
         }
-        
-        return obj as? String ?? ""
+
+        return String(describing: obj)
     }
 
     // MARK: - Helpers
@@ -149,13 +173,6 @@ final class Interpreter: ExprVisitor {
         default: return false
         }
     }
-    
-    private func checkNumberOperands(op: Token, l: Any?, r: Any?) throws {
-        guard let left = l as? Double else { return }
-        guard let right = r as? Double else { return }
-        
-        let runtimerError = RuntimeError(token: op, message: "Please use only numbers for arithmetic")
-        throw runtimerError
-    }
 }
+
 

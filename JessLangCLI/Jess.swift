@@ -48,21 +48,16 @@ class Jess {
     static func run(_ source: String) {
         let scanner = Scanner(source: source)
         let tokens = scanner.scanTokens()
-
+        
         let parser = Parser(tokens: tokens)
-        guard let expression = parser.parseExpressions() else { return }
-
+        
+        // Parse the whole program
+        let statements = parser.parseStatements()
+        
         if hadError { return }
-
+        
         let interpreter = Interpreter()
-
-        do {
-            try interpreter.interpret(expression: expression)
-        } catch let error as RuntimeError {
-            runtimeError(error)
-        } catch {
-            print("Unexpected error: \(error)")
-        }
+        interpreter.interpret(statements: statements)
     }
 
     // MARK: - Compile Errors

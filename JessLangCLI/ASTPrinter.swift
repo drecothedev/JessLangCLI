@@ -8,12 +8,19 @@
 import Foundation
 
 struct AstPrinter: ExprVisitor {
+    func visitAssign(_ expr: Expr, name: Token, value: Expr) throws -> String {
+        name.lexeme
+    }
     typealias ReturnType = String
     
     func print(_ expr: Expr) throws -> String {
             try expr.accept(self)
     }
-
+    
+    func visitVariable(_ expr: Expr, name: Token) throws -> String {
+            name.lexeme
+    }
+    
     func visitBinary(_ expr: Expr, left: Expr, op: Token, right: Expr) throws -> String {
         "(\(op.lexeme) \(try left.accept(self)) \(try right.accept(self)))"
     }

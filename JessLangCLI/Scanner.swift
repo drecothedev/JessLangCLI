@@ -18,16 +18,12 @@ class Scanner {
     }
     
     func scanTokens() -> [Token] {
-        print("Scanning Tokens...")
         while !isAtEnd() {
             start = current
             // Scan each token
             scanToken()
         }
         tokens.append(Token(type: .EOF, lexeme: "", literal: .none, line: line))
-        for token in tokens {
-            print(token.type)
-        }
         return tokens
     }
 
@@ -41,34 +37,34 @@ class Scanner {
         switch c {
         case "(":
             addToken(type: .leftParent)
-            print("Token scanned: \(c)")
+            // print("Token scanned: \(c)")
         case ")":
             addToken(type: .rightParent)
-            print("Token scanned: \(c)")
+            // print("Token scanned: \(c)")
         case "{":
             addToken(type: .leftBrace)
-            print("Token scanned: \(c)")
+            // print("Token scanned: \(c)")
         case "}":
             addToken(type: .rightBrace)
-            print("Token scanned: \(c)")
+            // print("Token scanned: \(c)")
         case ",":
             addToken(type: .comma)
-            print("Token scanned: \(c)")
+            // print("Token scanned: \(c)")
         case ".":
             addToken(type: .dot)
-            print("Token scanned: \(c)")
+            // print("Token scanned: \(c)")
         case "-":
             addToken(type: .minus)
-            print("Token scanned: \(c)")
+            // print("Token scanned: \(c)")
         case "+":
             addToken(type: .plus)
-            print("Token scanned: \(c)")
+            // print("Token scanned: \(c)")
         case ";":
             addToken(type: .semicolon)
-            print("Token scanned: \(c)")
+            // print("Token scanned: \(c)")
         case "*":
             addToken(type: .star)
-            print("Token scanned: \(c)")
+            // print("Token scanned: \(c)")
         case "!":
             addToken(type: match(expectedValue: "=") ? .bangEqual : .bang)
         case ">":
@@ -76,7 +72,7 @@ class Scanner {
         case "<":
             addToken(type: match(expectedValue: "=") ? .lessEqual : .lessEqual)
         case "=":
-            addToken(type: match(expectedValue: "=") ? .equalEqual : .bang)
+            addToken(type: match(expectedValue: "=") ? .equalEqual : .equal)
         case "/":
             if match(expectedValue: "/") {
                 // A commment goes until the end of the line
@@ -88,11 +84,11 @@ class Scanner {
             }
             break
         case " ":
-            print("Ignoring white space")
+            let _ = ""
         case "\r":
-            print("")
+            let _ = "" 
         case "\t":
-            print("")
+            // print("")
             break
         case "\n":
             line += 1
@@ -107,7 +103,7 @@ class Scanner {
                 identifier()
             }
             else {
-                print(JessError(line: line, message: "Unexpected character: \(c)"))
+//                print(JessError(line: line, message: "Unexpected character: \(c)"))
             }
             break
         }
@@ -125,7 +121,7 @@ class Scanner {
     
     func addToken(type: TokenType) {
         addToken(type: type, literal: .none)
-        print("token added: \(type)")
+//        print("token added: \(type)")
     }
     
     // Adds token based on literal type.
@@ -134,7 +130,7 @@ class Scanner {
         let currentIdx = source.index(source.startIndex, offsetBy: current)
         let text = String(source[startIdx..<currentIdx])
         tokens.append(Token(type: type, lexeme: text, literal: literal, line: line))
-        print("token added: \(type) literal: \(literal) lexeme: \(text)") // ✅
+//        print("token added: \(type) literal: \(literal) lexeme: \(text)") // ✅
     }
 
 
@@ -175,7 +171,7 @@ class Scanner {
         let endIdx = source.index(source.startIndex, offsetBy: current - 1)
         let value = source[startIdx..<endIdx]
         addToken(type: .string, literal: .string(String(value)))
-        print(value)
+        // print(value)
     }
     
     func isDigit(_ c: Character) -> Bool {
