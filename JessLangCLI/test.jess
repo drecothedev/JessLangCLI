@@ -1,26 +1,68 @@
-func main() {
-    var p = "p";
-    while(!checkUserChoice(p)) {
-        print checkUserChoice(p);
+// Thank you so much for taking the time to run a program in my new langauge. i know it is very premature so i welcome any feedback or
+// improvement ideas. This has been a true labor of love and i will continue to make improvements.
+
+// As a disclaimer, i love my job. but there has been jobs in the past that i have not... so sometimes this is life...
+
+// Main game
+var health = 10;
+var playerIsLucky = false;
+var turn = 1;
+
+// Comment out the following line to see an error.
+// var turn = 2;
+
+
+// main game loop. Showcases while loops.
+// Uncomment the commented code to check errors.
+func life() {
+    print "Welcome to life. Survive life and make time for hobbies.";
+    
+    while (health > 0) {
+        print "---- Turn " + turn + " ----";
+        print "Health: " + health;
+        // print "Health: " + health
+        if (playerIsLucky) {
+            timeToWorkOnPersonalHobbies();
+        } else {
+            work();
+        }
+
+        turn = turn + 1;
+    }
+
+    print "Game over. Thanks for playing!";
+}
+
+// Function to showcase global variable mutability.
+// Also shows if statement support
+func timeToWorkOnPersonalHobbies() {
+    
+    health = health + 1;
+    if (health > 12) {
+        health = 12;
+        // try to delete the closing bracket to see what error you get.
+    }
+
+    print "Finally some free time...";
+    print "Health is now: " + health;
+
+    // Luck flips
+    playerIsLucky = false;
+}
+
+// function that shows if-else statements.
+func work() {
+    print "You go to work";
+    if (health >= 3) {
+        health = health - 2;
+        print "oomf... -2 health.";
+        print "your health is" + " "+ health;
+        playerIsLucky = true;
+    } else {
+        print "that's life";
+        print "You died!";
+        health = 0;
     }
 }
 
-<<<<<<< HEAD
-// outputs 45. Meaning the Jess supports variable assignment. 
-
-=======
-func checkUserChoice(a) {
-    var compChoice = "p";
-    if (a == compChoice) {
-        return true;
-    }
-    return false;
-}
-
-main();
-
-let flavor = "Chocolate";
-flavor = "vanilla"; 
-print checkUserChoice(flavor);
-print flavor;
->>>>>>> 8d4ff51 (added support for variable declaration, functions, loops, and logical operators)
+life();

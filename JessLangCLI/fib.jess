@@ -1,0 +1,16 @@
+// Thank you so much for taking the time to run a program in my new langauge. i know it is very premature so i welcome any feedback or
+// improvement ideas. This has been a true labor of love and i will continue to make improvements.
+
+// Finds the fib of a number. This is meant to showcase recursion ability. The higher the number the longer the program will take so be cautious. 
+func main() {
+    print fib(30);
+}
+
+func fib(n) {
+    if (n <= 1)  {
+        return n;
+    }
+    return fib(n-1) + fib(n-2);
+}
+
+main();

@@ -6,15 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		DAD4A8982F4571D000CD6891 /* JessCallable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD4A8972F4571D000CD6891 /* JessCallable.swift */; };
-		DAD4A8992F4571D000CD6891 /* JessCallable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD4A8972F4571D000CD6891 /* JessCallable.swift */; };
-		DAD4A89B2F45720D00CD6891 /* ReturnSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD4A89A2F45720D00CD6891 /* ReturnSignal.swift */; };
-		DAD4A89C2F45720D00CD6891 /* ReturnSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD4A89A2F45720D00CD6891 /* ReturnSignal.swift */; };
-		DAD4A89E2F45721E00CD6891 /* JessFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD4A89D2F45721E00CD6891 /* JessFunction.swift */; };
-		DAD4A89F2F45721E00CD6891 /* JessFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD4A89D2F45721E00CD6891 /* JessFunction.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		DAB5D5562F3192F5002CDD82 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -30,9 +21,6 @@
 /* Begin PBXFileReference section */
 		DAB5D5582F3192F5002CDD82 /* JessLangCLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = JessLangCLI; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAB5D57E2F31A19F002CDD82 /* JessLang.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JessLang.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		DAD4A8972F4571D000CD6891 /* JessCallable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JessCallable.swift; sourceTree = "<group>"; };
-		DAD4A89A2F45720D00CD6891 /* ReturnSignal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReturnSignal.swift; sourceTree = "<group>"; };
-		DAD4A89D2F45721E00CD6891 /* JessFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JessFunction.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -40,6 +28,10 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Enviroment.swift,
+				fib.jess,
+				JessCallable.swift,
+				JessFunction.swift,
+				ReturnSignal.swift,
 			);
 			target = DAB5D57D2F31A19F002CDD82 /* JessLang */;
 		};
@@ -82,9 +74,6 @@
 		DAB5D54F2F3192F5002CDD82 = {
 			isa = PBXGroup;
 			children = (
-				DAD4A8972F4571D000CD6891 /* JessCallable.swift */,
-				DAD4A89A2F45720D00CD6891 /* ReturnSignal.swift */,
-				DAD4A89D2F45721E00CD6891 /* JessFunction.swift */,
 				DAB5D55A2F3192F5002CDD82 /* JessLangCLI */,
 				DAB5D57F2F31A19F002CDD82 /* JessLang */,
 				DAB5D5592F3192F5002CDD82 /* Products */,
@@ -200,9 +189,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DAD4A8992F4571D000CD6891 /* JessCallable.swift in Sources */,
-				DAD4A89F2F45721E00CD6891 /* JessFunction.swift in Sources */,
-				DAD4A89C2F45720D00CD6891 /* ReturnSignal.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,9 +196,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DAD4A89E2F45721E00CD6891 /* JessFunction.swift in Sources */,
-				DAD4A8982F4571D000CD6891 /* JessCallable.swift in Sources */,
-				DAD4A89B2F45720D00CD6891 /* ReturnSignal.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
