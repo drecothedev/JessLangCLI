@@ -130,7 +130,7 @@ class Scanner {
         let currentIdx = source.index(source.startIndex, offsetBy: current)
         let text = String(source[startIdx..<currentIdx])
         tokens.append(Token(type: type, lexeme: text, literal: literal, line: line))
-//        print("token added: \(type) literal: \(literal) lexeme: \(text)") // ✅
+//        print("token added: \(type) literal: \(literal) lexeme: \(text)") 
     }
 
 

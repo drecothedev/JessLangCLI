@@ -18,6 +18,9 @@ class Jess {
     // MARK: - Error Flags
     static var hadError = false
     static var hadRuntimeError = false
+    
+    /// MARK: - Initializes Jess's built in methods
+    static var jessBuiltInFunctions: JessBuiltInFunctions = JessBuiltInFunctions().shared
 
     // MARK: - Entry Points
 

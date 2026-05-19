@@ -27,11 +27,17 @@ indirect enum Expr {
     // Evaluates a variable representing an expression
     case variable(Token)
     
+    // Assigns variable names to values
     case assign(name: Token, value: Expr)
     
+    // Boolean operators: &&,
     case logical(l: Expr, op: Token, r: Expr)
     
+    // Call for function *********
     case call(callee: Expr, paren: Token, args: [Expr])
+    
+    // Get method for properties witin a Class
+    case get(expr: Expr, name: Token)
     
 }
 
@@ -46,6 +52,8 @@ protocol ExprVisitor {
     func visitAssign(_ expr: Expr, name: Token, value: Expr) throws -> ReturnType
     func visitLogical(_ expr: Expr, left: Expr, op: Token, right: Expr) throws -> ReturnType
     func visitCall(_ expr: Expr, callee: Expr, paren: Token, args: [Expr]) throws -> ReturnType
+    func visitClassStmt(stmt: Stmt) throws
+    func visitGetExpr(expr: Expr, name: Token) throws -> Any?
 }
 
 
@@ -57,29 +65,6 @@ class Expression {
     
     init(currentExpr: Expr) {
         self.currentExpr = currentExpr
-    }
-    
-    // acceptMethod
-    func accept(visitor: Expr) {
-        switch visitor {
-        case .binary(let left, let op, let right):
-            print("Binary: \(left), \(op), \(right)")
-            
-        case .grouping(_):
-            print("")
-        case .literal(_):
-            print("D")
-        case .unary(_, _):
-            print("S")
-        case .variable(_):
-            print("")
-        case .assign(name: let name, value: let value):
-            print("")
-        case .logical(l: let l, op: let op, r: let r):
-            print("")
-        case .call(callee: let callee, paren: let paren, args: let args):
-            print("")
-        }
     }
     
     func printExpr(_ expr: Expr) -> String {
@@ -98,11 +83,13 @@ class Expression {
         case .variable(_):
             return ""
         case .assign(name: let name, value: let value):
-            return ""
+            return "(\(name) \(value))"
         case .logical(l: let l, op: let op, r: let r):
-            return ""
+            return "(\(l), \(op), \(r))"
         case .call(callee: let callee, paren: let paren, args: let args):
-            return "" 
+            return "(\(callee), \(paren), \(args)"
+        case .get(expr: let expr, name: let name):
+            return "(\(expr), \(name)"
         }
     }
 }
@@ -128,6 +115,8 @@ extension Expr {
         case let .call(callee, paren, args):
             return try visitor.visitCall(self, callee: callee, paren: paren, args: args)
 
+        case .get(expr: let expr, name: let name):
+            return try visitor.visitGetExpr(expr: expr, name: name) as! V.ReturnType
         }
     }
 }

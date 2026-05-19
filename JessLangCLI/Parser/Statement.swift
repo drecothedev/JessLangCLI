@@ -14,6 +14,7 @@ indirect enum Stmt {
     case block([Stmt])
     case `if`(Expr, Stmt, Stmt?)
     case `while`(Expr, Stmt)
+    case `class`(name: Token, [Stmt])
 
     case function(name: Token, params: [Token], body: [Stmt])
     case `return`(keyword: Token, value: Expr?)

@@ -23,12 +23,15 @@ final class JessFunction: JessCallable, CustomStringConvertible {
     var arity: Int { params.count }
 
     func call(interpreter: Interpreter, args: [Any?]) throws -> Any? {
+        // Creates a new enviroment with its current closure.
         let localEnv = Enviroment(enclosing: closure)
-
+        
+        // Defines local variables for all paramenters and args passed in. Uses a hashmap for such
         for (param, arg) in zip(params, args) {
             try localEnv.define(name: param, value: arg)
         }
-
+        
+        // Passes a series of statements in to be execuded.
         do {
             try interpreter.executeBlock(body, in: localEnv)
         } catch let returnSignal as ReturnSignal {
